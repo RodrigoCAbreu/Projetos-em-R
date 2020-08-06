@@ -137,13 +137,86 @@ plot.boxes  <- function(X, label){
 
 Map(plot.boxes, xAxis, labels)
 
+# Analisando Density Plots
+
+# Visualizando o relacionamento entre as variáveis preditoras e demanda por bike
+labels <- c("Demanda de Bikes vs Temperatura",
+            "Demanda de Bikes vs Humidade",
+            "Demanda de Bikes vs Velocidade do Vento",
+            "Demanda de Bikes vs Hora")
+
+xAxis <- c("temp", "hum", "windspeed", "hr")
+
+# Função para os Density Plots
+plot.scatter <- function(X, label){ 
+  ggplot(bikes, aes_string(x = X, y = "cnt")) + 
+    geom_point(aes_string(colour = "cnt"), alpha = 0.1) + 
+    scale_colour_gradient(low = "green", high = "blue") + 
+    geom_smooth(method = "loess") + 
+    ggtitle(label) +
+    theme(text = element_text(size = 20)) 
+}
+
+Map(plot.scatter, xAxis, labels)
 
 
+# Explorando a interação entre tempo e dia, em dias da semana e fins de semana
+labels <- list("Box plots - Demanda por Bikes as 09:00 para \n dias da semana e fins de semana",
+               "Box plots - Demanda por Bikes as 18:00  para \n dias da semana e fins de semana")
+
+Times <- list(9, 18)
+
+plot.box2 <- function(time, label){ 
+  ggplot(bikes[bikes$hr == time, ], aes(x = isWorking, y = cnt, group = isWorking)) + 
+    geom_boxplot( ) + ggtitle(label) +
+    theme(text = element_text(size = 18)) }
+
+Map(plot.box2, Times, labels)
 
 
+# Feature Selection
 
-# Gera saida no Azure ML
-if(Azure) maml.mapOutputPort('bikes')
+dim(bikes)
+
+any(is.na(bikes))
+
+# Criando um modelo para identificar os atributos com maior importância para o modelo preditivo
+require(randomForest)
+
+# Avalidando a importância de todas as variaveis
+modelo <- randomForest(cnt ~ . , 
+                       data = bikes, 
+                       ntree = 100, 
+                       nodesize = 10,
+                       importance = TRUE)
+
+# Plotando as variáveis por grau de importância
+varImpPlot(modelo)
+
+# Removendo variáveis colineares
+modelo <- randomForest(cnt ~ . - mnth
+                       - hr
+                       - workingday
+                       - isWorking
+                       - dayWeek
+                       - xformHr
+                       - workTime
+                       - holiday
+                       - windspeed
+                       - monthCount
+                       - weathersit, 
+                       data = bikes, 
+                       ntree = 100, 
+                       nodesize = 10,
+                       importance = TRUE)
+
+varImpPlot(modelo)
+
+# Gravando o resultado
+df_saida <- bikes[, c("cnt", rownames(modelo$importance))]
+
+
+if(Azure) maml.mapOutputPort("df_saida ")
 
 
 
