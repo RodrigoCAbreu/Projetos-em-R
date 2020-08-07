@@ -62,6 +62,8 @@ bikes$xformHr <- ifelse(bikes$hr > 4, bikes$hr - 5, bikes$hr + 19)
 # Considerando horas da madrugada
 bikes$xformWorkHr <- ifelse(bikes$isWorking, bikes$xformHr, bikes$xformHr + 24) 
 
+if(Azure) maml.mapOutputPort("bikes")
+
 
 # Análise de Correlação 
 
