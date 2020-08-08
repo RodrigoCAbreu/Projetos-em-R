@@ -1,1 +1,1 @@
-# Projetos-em-R
+# Nesse repositório são apresentados os mais váriados exemplos de modelos analíticos no qual foi empregado machine learning de modo a automatizar a análise de dados. Todos os modelos foram desenvolvidos utilizando linguagem R
