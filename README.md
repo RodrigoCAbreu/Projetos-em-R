@@ -1,1 +1,1 @@
-# Nesse repositório são apresentados os mais váriados exemplos de modelos analíticos no qual foi empregado machine learning de modo a automatizar a análise de dados, realizando análises preditivas de modo rápido e eficiente. Todos os modelos foram desenvolvidos utilizando a linguagem R
+# Nesse repositório é apresentado os mais váriados exemplos de modelos analíticos no qual foi empregado variadas técnicas de machine learning, realizando análises preditivas de modo rápido e eficiente. Todos os modelos foram desenvolvidos utilizando a linguagem R
